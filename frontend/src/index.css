@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-[#F7FAFC] text-[#111827] dark:bg-[#0B0F17] dark:text-[#F3F4F6] antialiased font-sans selection:bg-[#56CCF2]/30 selection:text-[#111827] dark:selection:text-[#F3F4F6] min-h-screen overflow-x-hidden transition-colors duration-300;
+  }
+}
+
+/* Custom Glassmorphism Utilities */
+@layer utilities {
+  /* Dynamic light/dark glass container matching Jobnique theme */
+  .glass-card {
+    @apply bg-white/80 dark:bg-[#111827]/80 border border-[#E5E7EB] dark:border-[#1F2937] backdrop-blur-xl shadow-md dark:shadow-2xl;
+  }
+
+  /* Interactive hover states for cards */
+  .glass-card-hover {
+    @apply transition-all duration-300 hover:border-[#2F80ED]/40 dark:hover:border-[#2F80ED]/50 hover:bg-white dark:hover:bg-[#111827] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)];
+  }
+
+  /* Input fields dynamic glass state */
+  .glass-input {
+    @apply bg-white dark:bg-[#1F2937] border border-[#E5E7EB] dark:border-[#374151] text-[#111827] dark:text-white placeholder-[#9CA3AF] focus:border-[#2F80ED] focus:ring-2 focus:ring-[#2F80ED]/30 rounded-xl outline-none transition-all;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-[#F7FAFC] dark:bg-[#0B0F17];
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-[#1F2937] rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-[#374151];
+}
+
+/* Smooth Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
+}
