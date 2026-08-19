@@ -4,8 +4,8 @@ An AI-powered full-stack job portal built with React, Node.js/Express, and MySQL
 
 ## 🌐 Live Demo
 
-- **Frontend:** https://jobnique.vercel.app
-- **Backend API:** https://jobnique.onrender.com
+- **Frontend:** https://jobnique-liart.vercel.app/
+- **Backend API:** https://jobnique.onrender.com/
 
 ---
 
