@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Fallback URL matching Express server (Port 4000 & /api/v1)
+// Priority: Vite Environment Variable -> Fallback Localhost
 const BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1";
 
@@ -20,7 +20,7 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Allow browser to auto-set boundary for FormData (e.g., resume uploads)
+    // Let the browser automatically set the correct boundary for file uploads
     if (config.data instanceof FormData) {
       delete config.headers["Content-Type"];
     }
@@ -35,14 +35,19 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // List of public pages where token cleanup shouldn't interrupt flow
-      const publicPaths = ["/", "/login", "/register", "/forgot-password", "/jobs"];
+      const publicPaths = [
+        "/",
+        "/login",
+        "/register",
+        "/forgot-password",
+        "/jobs",
+      ];
       const isPublicPath = publicPaths.includes(window.location.pathname);
 
-      // Clean up local storage if token expired
+      // Clear expired authentication state
       localStorage.removeItem("token");
 
-      // Optional: Auto-redirect only if user was trying to perform a protected action
+      // Redirect if the failed request was a protected action
       if (!isPublicPath && !error.config?.url?.includes("/auth/me")) {
         window.location.href = "/login";
       }
