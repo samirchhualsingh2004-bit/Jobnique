@@ -7,9 +7,15 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
+    port: process.env.DB_PORT || 4000,
     dialect: "mysql",
     logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: true,
+      },
+    },
   }
 );
 
@@ -22,6 +28,5 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-require("dotenv").config();
 
 module.exports = { sequelize, connectDB };
