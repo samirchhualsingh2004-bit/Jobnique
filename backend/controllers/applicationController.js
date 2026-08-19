@@ -3,7 +3,7 @@ const path = require("path");
 
 // ✅ Import models from the central file where associations are defined
 const { Application, Job, User } = require("../models");
-const Notification = require("../models/notification");
+const Notification = require('../models/Notification');
 
 // ==========================================
 // Apply to a Job (Job Seekers only)
