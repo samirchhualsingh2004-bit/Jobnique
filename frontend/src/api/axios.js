@@ -1,10 +1,13 @@
 import axios from "axios";
 
-// Clean and validate the base URL
+// Clean and sanitize the base URL to prevent bracket/slash formatting bugs
 const getBaseURL = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
+  let envUrl = import.meta.env.VITE_API_URL;
   if (envUrl && typeof envUrl === "string") {
-    return envUrl.trim().replace(/\/+$/, "");
+    return envUrl
+      .replace(/[\[\]]/g, "")     // Remove accidental brackets [ ]
+      .trim()
+      .replace(/\/+$/, "");       // Strip trailing slashes
   }
   return "https://jobnique.onrender.com/api/v1";
 };
@@ -17,7 +20,7 @@ const api = axios.create({
   },
 });
 
-// Request Interceptor: Attach Authorization Bearer token & handle FormData
+// Request Interceptor: Attach Bearer Token & handle FormData
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -25,7 +28,7 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Allow browser to auto-set boundary for FormData
+    // Let the browser set the boundary for multipart/form-data
     if (config.data instanceof FormData) {
       delete config.headers["Content-Type"];
     }
@@ -35,7 +38,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Handle global API errors
+// Response Interceptor: Handle global API errors (e.g. 401 Session Expiration)
 api.interceptors.response.use(
   (response) => response,
   (error) => {

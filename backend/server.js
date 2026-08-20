@@ -27,20 +27,33 @@ const allowedOrigins = [
   "https://jobnique-one.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",
-].filter(Boolean);
+]
+  .filter(Boolean)
+  .map((origin) => origin.trim().replace(/\/+$/, "")); // Strip any accidental trailing slashes
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, Postman)
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow non-browser requests (mobile apps, Postman, curl)
+    if (!origin) return callback(null, true);
+
+    const isAllowed =
+      allowedOrigins.includes(origin) ||
+      origin.endsWith(".vercel.app") ||
+      origin.includes("localhost");
+
+    if (isAllowed) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+};
+
+app.use(cors(corsOptions));
+// Handle HTTP OPTIONS preflight requests on all routes
+app.options("*", cors(corsOptions));
 
 // ==========================================
 // Body Parsers & Middleware
@@ -107,7 +120,7 @@ const startServer = async () => {
       console.error("Database schema synchronization failed:", syncError);
     }
 
-    // 3. Start Listening
+    // 3. Start Listening on 0.0.0.0 for Cloud Containers
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Jobnique server running on port ${PORT}`);
     });
