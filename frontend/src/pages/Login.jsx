@@ -199,18 +199,18 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Google Sign In Button Second */}
-          <div className="flex justify-center mb-4 [&>div]:w-full [&>div>iframe]:w-full">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              theme="outline"
-              size="large"
-              text="continue_with"
-              shape="pill"
-              width="100%"
-            />
-          </div>
+          {/* Google Sign In Button */}
+<div className="flex justify-center mb-4">
+  <GoogleLogin
+    onSuccess={handleGoogleSuccess}
+    onError={handleGoogleError}
+    theme="outline"
+    size="large"
+    text="continue_with"
+    shape="pill"
+    width="350"
+  />
+</div>
 
           {/* Divider */}
           <div className="relative my-4">

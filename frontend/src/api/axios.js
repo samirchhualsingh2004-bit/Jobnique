@@ -1,12 +1,17 @@
 import axios from "axios";
 
-// Priority: Vite Environment Variable -> Fallback Localhost
-const BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1";
+// Clean and validate the base URL
+const getBaseURL = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && typeof envUrl === "string") {
+    return envUrl.trim().replace(/\/+$/, "");
+  }
+  return "https://jobnique.onrender.com/api/v1";
+};
 
 const api = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true, // Enables cookie-based session handling
+  baseURL: getBaseURL(),
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -20,7 +25,7 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Let the browser automatically set the correct boundary for file uploads
+    // Allow browser to auto-set boundary for FormData
     if (config.data instanceof FormData) {
       delete config.headers["Content-Type"];
     }
@@ -30,7 +35,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Handle global API errors (e.g., Session Expired)
+// Response Interceptor: Handle global API errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -44,10 +49,8 @@ api.interceptors.response.use(
       ];
       const isPublicPath = publicPaths.includes(window.location.pathname);
 
-      // Clear expired authentication state
       localStorage.removeItem("token");
 
-      // Redirect if the failed request was a protected action
       if (!isPublicPath && !error.config?.url?.includes("/auth/me")) {
         window.location.href = "/login";
       }
